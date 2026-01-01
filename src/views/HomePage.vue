@@ -21,6 +21,8 @@ const getCompletedCount = (projectId: string) => {
   return { completed, total: project.tasks.length };
 };
 
+const SERVER_SEED = '-2227034464772931599';
+
 const categories = [
   {
     name: 'Biomes',
@@ -42,6 +44,41 @@ const categories = [
     icon: 'cube',
     color: 'from-amber-500 to-orange-500',
     description: 'Spots de minage, spawners et points d\'intérêt',
+  },
+];
+
+const seedParams = `seed=${SERVER_SEED}&platform=java_1_21_5&dimension=overworld&x=0&z=0&zoom=0.5`;
+
+const chunkbaseTools = [
+  {
+    name: 'Seed Map',
+    url: `https://www.chunkbase.com/apps/seed-map#${seedParams}`,
+    description: 'Carte complète du monde',
+  },
+  {
+    name: 'Biome Finder',
+    url: `https://www.chunkbase.com/apps/biome-finder#${seedParams}`,
+    description: 'Trouver des biomes',
+  },
+  {
+    name: 'Slime Finder',
+    url: `https://www.chunkbase.com/apps/slime-finder#${seedParams}`,
+    description: 'Chunks à Slimes',
+  },
+  {
+    name: 'Village Finder',
+    url: `https://www.chunkbase.com/apps/village-finder#${seedParams}`,
+    description: 'Trouver des villages',
+  },
+  {
+    name: 'Stronghold Finder',
+    url: `https://www.chunkbase.com/apps/stronghold-finder#${seedParams}`,
+    description: 'Forteresses de l\'End',
+  },
+  {
+    name: 'Nether Fortress',
+    url: `https://www.chunkbase.com/apps/nether-fortress-finder#${seedParams}`,
+    description: 'Forteresses du Nether',
   },
 ];
 </script>
@@ -139,6 +176,29 @@ const categories = [
             </svg>
           </div>
         </router-link>
+      </div>
+
+      <!-- Chunkbase Tools -->
+      <div class="mb-8">
+        <h2 class="text-xl font-semibold text-zinc-100 mb-4">Outils Chunkbase</h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+          <a
+            v-for="tool in chunkbaseTools"
+            :key="tool.name"
+            :href="tool.url"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="bg-zinc-900 rounded-xl border border-zinc-800 p-4 hover:border-red-500/50 hover:bg-zinc-800/50 transition group text-center"
+          >
+            <div class="w-10 h-10 mx-auto rounded-lg bg-gradient-to-br from-red-500/20 to-pink-500/10 flex items-center justify-center mb-3 group-hover:from-red-500/30 group-hover:to-pink-500/20 transition">
+              <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
+              </svg>
+            </div>
+            <h3 class="text-sm font-medium text-zinc-100 group-hover:text-white transition">{{ tool.name }}</h3>
+            <p class="text-xs text-zinc-500 mt-1">{{ tool.description }}</p>
+          </a>
+        </div>
       </div>
 
       <!-- Latest Project -->
