@@ -31,6 +31,7 @@ const navItems = [
   { path: '/biomes', label: 'Biomes' },
   { path: '/bases', label: 'Bases' },
   { path: '/resources', label: 'Ressources' },
+  { path: '/todos', label: 'Projets' },
 ];
 </script>
 

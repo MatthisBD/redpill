@@ -3,6 +3,7 @@ import HomePage from '@/views/HomePage.vue'
 import BiomesPage from '@/views/BiomesPage.vue'
 import BasesPage from '@/views/BasesPage.vue'
 import ResourcesPage from '@/views/ResourcesPage.vue'
+import TodosPage from '@/views/TodosPage.vue'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -26,6 +27,11 @@ const router = createRouter({
       path: '/resources',
       name: 'resources',
       component: ResourcesPage,
+    },
+    {
+      path: '/todos',
+      name: 'todos',
+      component: TodosPage,
     },
   ],
 })
