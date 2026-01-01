@@ -1,13 +1,25 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, computed } from 'vue';
 import { useCoordinatesStore } from '@/stores/coordinatesStore';
+import { useTodoStore } from '@/stores/todoStore';
 import CoordinateCard from '@/components/CoordinateCard.vue';
 
 const coordinatesStore = useCoordinatesStore();
+const todoStore = useTodoStore();
 
 onMounted(() => {
   coordinatesStore.fetchCoordinates();
+  todoStore.fetchProjects();
 });
+
+const latestProject = computed(() => todoStore.projects[0] || null);
+
+const getCompletedCount = (projectId: string) => {
+  const project = todoStore.projects.find(p => p.id === projectId);
+  if (!project) return { completed: 0, total: 0 };
+  const completed = project.tasks.filter(t => t.completed).length;
+  return { completed, total: project.tasks.length };
+};
 
 const categories = [
   {
@@ -127,6 +139,66 @@ const categories = [
             </svg>
           </div>
         </router-link>
+      </div>
+
+      <!-- Latest Project -->
+      <div v-if="latestProject" class="mb-8">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-semibold text-zinc-100">Projet en cours</h2>
+          <router-link to="/todos" class="text-red-400 text-sm font-medium hover:text-red-300 transition flex items-center gap-1">
+            Voir tous les projets
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+          </router-link>
+        </div>
+        <div class="bg-zinc-900 rounded-xl border border-zinc-800 p-5 hover:border-zinc-700 transition">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+              </svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="text-lg font-semibold text-zinc-100">{{ latestProject.title }}</h3>
+              <p v-if="latestProject.description" class="text-sm text-zinc-400 mt-1">{{ latestProject.description }}</p>
+              <div class="flex items-center gap-4 mt-3 text-sm text-zinc-500">
+                <span>Par {{ latestProject.addedBy }}</span>
+                <span v-if="latestProject.tasks.length > 0" class="flex items-center gap-1">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                  </svg>
+                  {{ getCompletedCount(latestProject.id).completed }}/{{ getCompletedCount(latestProject.id).total }} tâches
+                </span>
+              </div>
+              <!-- Tasks preview -->
+              <div v-if="latestProject.tasks.length > 0" class="mt-4 space-y-2">
+                <div
+                  v-for="task in latestProject.tasks.slice(0, 3)"
+                  :key="task.id"
+                  class="flex items-center gap-2 text-sm"
+                >
+                  <div
+                    :class="[
+                      'w-4 h-4 rounded border flex items-center justify-center shrink-0',
+                      task.completed ? 'bg-emerald-500 border-emerald-500' : 'border-zinc-600'
+                    ]"
+                  >
+                    <svg v-if="task.completed" class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                  </div>
+                  <span :class="task.completed ? 'text-zinc-500 line-through' : 'text-zinc-300'">
+                    {{ task.title }}
+                  </span>
+                </div>
+                <p v-if="latestProject.tasks.length > 3" class="text-xs text-zinc-500 pl-6">
+                  + {{ latestProject.tasks.length - 3 }} autres tâches
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Recent coordinates -->
